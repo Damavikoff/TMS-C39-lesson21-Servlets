@@ -1,0 +1,4 @@
+com\sharpchnitzel\servletus\DataProcessor.class
+com\sharpchnitzel\servletus\DatabaseHandler.class
+com\sharpchnitzel\servletus\InitLoader.class
+com\sharpchnitzel\servletus\TableWrapper.class

@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Servletus</title>
+		<script type="text/javascript" src="src/jquery-3.6.0.min.js"></script>
+		<script type="text/javascript" src="src/vue.min.js"></script>
+		<script type="text/javascript" src="src/semantic.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="src/semantic.min.css">
+		<script type="text/javascript" src="src/app.js" defer></script>
+		<link rel="stylesheet" type="text/css" href="src/style.css">
+	</head>
+	<body>
+		<div id="main">
+			<div class="ui inverted active dimmer" v-if="!isReady">
+				<div class="ui loader"></div>
+			</div>
+			<div class="ui divided grid h100 m0">
+				<div class="five wide column">
+					<div class="ui relaxed divided list" v-if="data.list.length">
+  						<div class="item" v-for="(tbl, key) in data.list">
+							<div class="ui fluid primary button" :class="{basic: key != data.active}" @click="data.active = key">{{tbl.title}}</div>
+						</div>
+					</div>
+				</div>
+				<div class="eleven wide column pa0">
+					<div class="ui basic segments h100 fc" v-if="data.list.length">
+						<div class="ui segment ps0">
+							<div class="fr">
+								<div class="centered f1">
+									<div class="ui small header">
+										<i class="th icon"></i>
+										<div class="content">
+											{{data.list[data.active].title}}
+										</div>
+									</div>
+								</div>
+								<div class="centered">
+									<div class="ui small red icon button" v-if="data.list[data.active].inEdit" @click="clearForm">
+										<i class="sync icon"></i>
+									</div>
+									<div class="ui small blue icon button"
+											 v-if="data.list[data.active].inEdit" @click="updateRow" :class="{disabled: formIsEmpty}">
+										<i class="checkmark icon"></i>
+									</div>
+									<div class="ui small facebook icon button"
+											 v-if="!data.list[data.active].inEdit" @click="insertRow" :class="{disabled: formIsEmpty}">
+										<i class="plus icon"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui segment ps0">
+							<div class="ui small form">
+								<div class="fields" v-for="n in Math.ceil((data.list[data.active].columns.length - 1) / 4)">
+									<template v-for="fld in 4">
+										<div class="sixteen wide field"
+												 v-for="(col, key) in data.list[data.active].columns"
+												 v-if="key == (n - 1) * 4 + fld">
+												 <label>{{col}}</label>
+											<input type="text" placeholder="..." v-model.trim="data.list[data.active].form[col]"/>
+										</div>
+									</template>
+								</div>
+							</div>
+						</div>
+						<div class="ui segment ps0 fc f1">
+							<div class="scrollable f1">
+								<div class="absolute">
+									<div class="ui divided items" v-if="data.list[data.active].list.length">
+		  							<div class="item" v-for="(row, key) in data.list[data.active].list">
+		  								<div class="content">
+		  									<div class="fr">
+		  										<div class="centered f1">
+		  											<div class="ui small orange label">IDX: {{row[data.list[data.active].columns[0]]}}</div>
+		  										</div>
+		  										<div class="centered">
+		  											<a class="ui small blue left labeled label" @click="fillForm(row)"><i class="pen icon"></i> MOD</a>
+		  											<a class="ui small red left labeled label"
+		  												 @click="deleteRow(row[data.list[data.active].columns[0]])"><i class="trash icon"></i> DEL</a>
+		  										</div>
+		  									</div>
+		  									<div class="ui divider"></div>
+		  									<div class="ui divided grid m0">
+  												<div class="row" v-for="m in Math.ceil((data.list[data.active].columns.length - 1) / 12)"
+  													:class="numberByInt(Math.floor((Math.min(12*m,data.list[data.active].columns.length)-12*(m-1))/3))+' column'">
+	  												<div class="column"
+	  														 v-for="n in Math.ceil((Math.min(12 * m, data.list[data.active].columns.length) - 12 * (m-1)) / 3)">
+	  													<div class="ui list">
+		  													<template v-for="fld in 4">
+		  														<div class="item" v-for="(col, key) in data.list[data.active].columns"
+		  																							v-if="key == m * (n - 1) * 4 + fld">
+																    <i class="right triangle icon"></i>
+																    <div class="content">
+																      <div class="inline header">{{col}}:</div>
+																      <span class="ui grey text">{{isEmpty(row[col]) ? '-' : row[col]}}</span>
+																    </div>
+																  </div>
+		  													</template>
+		  												</div>
+	  												</div>
+	  											</div>
+  											</div>
+		  								</div>
+		  							</div>
+		  						</div>
+		  					</div>
+		  				</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
